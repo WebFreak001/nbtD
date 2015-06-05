@@ -76,3 +76,13 @@ class NBTLong : INBTItem
 {
 	mixin NBTCommon!(NBTType.Long, long);
 }
+
+class NBTFloat : INBTItem
+{
+	mixin NBTCommon!(NBTType.Float, float);
+}
+
+class NBTDouble : INBTItem
+{
+	mixin NBTCommon!(NBTType.Double, double);
+}

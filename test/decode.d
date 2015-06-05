@@ -1,6 +1,7 @@
 import nbtd;
 
 import std.bitmanip;
+import std.math;
 
 unittest
 {
@@ -23,6 +24,16 @@ unittest
 	nbtLong.decode(cast(ubyte[])[4, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(long)5), false);
 	assert(nbtLong.name == "");
 	assert(nbtLong.value == 5);
+
+	NBTFloat nbtFloat = new NBTFloat();
+	nbtFloat.decode(cast(ubyte[])[5, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(float)5.5f), false);
+	assert(nbtFloat.name == "");
+	assert(abs(nbtFloat.value - 5.5f) < 0.01f);
+
+	NBTDouble nbtDouble = new NBTDouble();
+	nbtDouble.decode(cast(ubyte[])[6, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(double)5.5), false);
+	assert(nbtDouble.name == "");
+	assert(abs(nbtDouble.value - 5.5) < 0.01);
 
 	NBTString nbtText = new NBTString();
 	nbtText.decode(cast(ubyte[])[8, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(short)11) ~ cast(ubyte[])"Hello World", false);

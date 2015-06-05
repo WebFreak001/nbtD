@@ -16,6 +16,8 @@ unittest
 	NBTLong nbtLong = new NBTLong(cast(long)5);
 	assert(nbtLong.encode(false) == cast(ubyte[])[4, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(long)5));
 
+	// No Float/Double Encoding unittests due to precision
+
 	NBTString nbtText = new NBTString("Hello World");
 	assert(nbtText.encode(false) == [cast(ubyte)8] ~ cast(ubyte[])nativeToBigEndian(11) ~ cast(ubyte[])nbtText.value);
 }
