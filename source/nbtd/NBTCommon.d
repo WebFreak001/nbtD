@@ -1,30 +1,30 @@
-module nbtd.NBTShort;
+module nbtd.NBTCommon;
 
 import nbtd;
 
 import std.bitmanip;
 import std.zlib;
 
-class NBTShort : INBTItem
+mixin template NBTCommon(NBTType id, T)
 {
 private:
 	string _name;
-	short _value;
+	T _value;
 public:
-	this(short value = cast(short)0)
+	this(T value = cast(T)0)
 	{
 		_name = "";
 		_value = value;
 	}
 
-	@property NBTType type() { return NBTType.Short; }
-	@property int size() { return 2; }
+	@property NBTType type() { return id; }
+	@property int size() { return T.sizeof; }
 
 	@property string name() { return _name; }
 	@property void name(string name) { assert(name.length < short.sizeof); _name = name; }
 
-	@property short value() { return _value; }
-	@property void value(short value) { _value = value; }
+	@property T value() { return _value; }
+	@property void value(T value) { _value = value; }
 
 	ubyte[] encode(bool compressed = true)
 	{
@@ -32,7 +32,7 @@ public:
 		data[0] = cast(ubyte)type;
 		data.write!short(cast(short)name.length, 1);
 		data[3 .. 3 + name.length] = cast(ubyte[])name;
-		data.write!short(_value, 3 + name.length);
+		data.write!T(_value, 3 + name.length);
 
 		if(compressed)
 		{
@@ -53,6 +53,26 @@ public:
 		assert(data[0] == cast(ubyte)type);
 		short nameLength = data.peek!short(1);
 		_name = cast(string)data[3 .. 3 + nameLength];
-		_value = data.peek!short(3 + nameLength);
+		_value = data.peek!T(3 + nameLength);
 	}
+}
+
+class NBTByte : INBTItem
+{
+	mixin NBTCommon!(NBTType.Byte, byte);
+}
+
+class NBTShort : INBTItem
+{
+	mixin NBTCommon!(NBTType.Short, short);
+}
+
+class NBTInt : INBTItem
+{
+	mixin NBTCommon!(NBTType.Int, int);
+}
+
+class NBTLong : INBTItem
+{
+	mixin NBTCommon!(NBTType.Long, long);
 }

@@ -3,10 +3,7 @@ module nbtd;
 public
 {
 	import nbtd.INBTItem;
-	import nbtd.NBTByte;
-	import nbtd.NBTShort;
-	import nbtd.NBTInt;
-	import nbtd.NBTLong;
+	import nbtd.NBTCommon;
 	import nbtd.NBTEnd;
 	import nbtd.NBTString;
 
