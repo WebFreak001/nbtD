@@ -21,7 +21,7 @@ public:
 	@property byte value() { throw new Exception("NBTEnd has no value!"); }
 	@property void value(byte value) { throw new Exception("NBTEnd can not have a value!"); }
 
-	ubyte[] encode(bool compressed = true)
+	ubyte[] encode(bool compressed = true, bool hasName = true)
 	{
 		ubyte[] data = [cast(ubyte)0];
 		if(compressed)
@@ -32,7 +32,7 @@ public:
 		return data;
 	}
 
-	void decode(ubyte[] data, bool compressed = true)
+	void decode(ubyte[] data, bool compressed = true, bool hasName = true)
 	{
 		if(compressed)
 		{
@@ -41,5 +41,10 @@ public:
 		}
 
 		assert(data[0] == cast(ubyte)type);
+	}
+
+	void read(ref ubyte[] stream, bool hasName = true)
+	{
+		stream = stream[1 .. $];
 	}
 }

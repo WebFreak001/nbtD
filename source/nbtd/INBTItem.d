@@ -27,7 +27,9 @@ interface INBTItem
 	@property T value(T)();
 	@property void value(T)(T value);
 
-	ubyte[] encode(bool compressed = true);
+	ubyte[] encode(bool compressed = true, bool hasName = true);
 
-	void decode(ubyte[] data, bool compressed = true);
+	void decode(ubyte[] data, bool compressed = true, bool hasName = true);
+
+	void read(ref ubyte[] stream, bool hasName = true);
 }

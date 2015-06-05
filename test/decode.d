@@ -35,8 +35,18 @@ unittest
 	assert(nbtDouble.name == "");
 	assert(abs(nbtDouble.value - 5.5) < 0.01);
 
+	NBTByteArray nbtBytes = new NBTByteArray();
+	nbtBytes.decode(cast(ubyte[])[7, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(int)4) ~ cast(ubyte[])[1, 2, 42, 33], false);
+	assert(nbtBytes.name == "");
+	assert(nbtBytes.value == cast(byte[])[1, 2, 42, 33]);
+
 	NBTString nbtText = new NBTString();
 	nbtText.decode(cast(ubyte[])[8, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(short)11) ~ cast(ubyte[])"Hello World", false);
 	assert(nbtText.name == "");
 	assert(nbtText.value == "Hello World");
+
+	NBTIntArray nbtInts = new NBTIntArray();
+	nbtInts.decode(cast(ubyte[])[11, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(int)2) ~ cast(ubyte[])nativeToBigEndian(5) ~ cast(ubyte[])nativeToBigEndian(555), false);
+	assert(nbtInts.name == "");
+	assert(nbtInts.value == [5, 555]);
 }

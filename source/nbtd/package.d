@@ -5,7 +5,7 @@ public
 	import nbtd.INBTItem;
 	import nbtd.NBTCommon;
 	import nbtd.NBTEnd;
-	import nbtd.NBTString;
+	import nbtd.NBTList;
 
 	INBTItem parseNBT(ubyte[] data, bool compressed = true)
 	{
@@ -47,11 +47,23 @@ public
 			return value;
 		}
 		case 5:
-			throw new Exception("Float is unsupported!");
+		{
+			auto value = new NBTFloat();
+			value.decode(data, false);
+			return value;
+		}
 		case 6:
-			throw new Exception("Double is unsupported!");
+		{
+			auto value = new NBTDouble();
+			value.decode(data, false);
+			return value;
+		}
 		case 7:
-			throw new Exception("ByteArray is unsupported!");
+		{
+			auto value = new NBTByteArray();
+			value.decode(data, false);
+			return value;
+		}
 		case 8:
 		{
 			auto value = new NBTString();
@@ -59,11 +71,19 @@ public
 			return value;
 		}
 		case 9:
-			throw new Exception("List is unsupported!");
+		{
+			auto value = new NBTList();
+			value.decode(data, false);
+			return value;
+		}
 		case 10:
 			throw new Exception("Compound is unsupported!");
 		case 11:
-			throw new Exception("IntArray is unsupported!");
+		{
+			auto value = new NBTIntArray();
+			value.decode(data, false);
+			return value;
+		}
 		default:
 			throw new Exception("Invalid NBT-TAG(" ~ to!string(data[0]) ~ ")!");
 		}
