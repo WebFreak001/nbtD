@@ -1,0 +1,20 @@
+{
+	"name": "nbtd",
+	"description": "A lightweight NBT decoding/encoding library",
+	"copyright": "Copyright © 2015, WebFreak001",
+	"authors": ["WebFreak001"],
+	"targetType": "library",
+	"configurations": [
+		{
+			"name": "library"
+		},
+		{
+			"name": "test",
+			"targetType": "executable",
+			"dflags": ["-main"],
+			"buildOptions": ["unittests", "debugMode", "debugInfo"],
+			"sourcePaths": ["source", "test"],
+			"importPaths": ["source", "test"]
+		}
+	]
+}
