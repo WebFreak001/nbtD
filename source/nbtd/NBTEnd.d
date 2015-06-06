@@ -23,7 +23,11 @@ public:
 
 	ubyte[] encode(bool compressed = true, bool hasName = true)
 	{
-		ubyte[] data = [cast(ubyte)0];
+		ubyte[] data;
+		if(hasName)
+			data = [cast(ubyte)0];
+		else
+			data = [];
 		if(compressed)
 		{
 			Compress compressor = new Compress(HeaderFormat.gzip);
