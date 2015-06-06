@@ -38,11 +38,19 @@ public:
 	@property INBTItem[] value() { return _value; }
 	@property void value(INBTItem[] value) { _value = value; }
 
-	T get(T : INBTItem = INBTItem)(string name)
+	T get(T : INBTItem = INBTItem)(string name, bool throwOnError = true)
 	{
 		foreach(INBTItem item; _value)
 			if(item.name == name)
-				return cast(T)item;
+			{
+				if(cast(T)item)
+					return cast(T)item;
+				if(throwOnError)
+					throw new Exception("Can't cast item to " ~ T.stringof);
+				return null;
+			}
+		if(throwOnError)
+			throw new Exception("Item " ~ name ~ " not found in Compound!");
 		return null;
 	}
 
