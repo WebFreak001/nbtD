@@ -32,6 +32,8 @@ public:
 	@property INBTItem[] value() { return _items; }
 	@property void value(INBTItem[] value)
 	{
+		if(_items.length == 0 && value.length > 0)
+			elementType = value[0].type;
 		for(int i = 0; i < value.length; i++)
 			assert(value[i].type == elementType);
 		_items = value[];
