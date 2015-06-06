@@ -149,4 +149,9 @@ public:
 	{
 		return _items.length;
 	}
+
+	@property size_t length()
+	{
+		return _items.length;
+	}
 }
