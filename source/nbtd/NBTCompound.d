@@ -38,7 +38,7 @@ public:
 	@property INBTItem[] value() { return _value; }
 	@property void value(INBTItem[] value) { _value = value; }
 
-	T get(T)(string name)
+	T get(T : INBTItem = INBTItem)(string name)
 	{
 		foreach(INBTItem item; _value)
 			if(item.name == name)
@@ -113,14 +113,16 @@ public:
 		INBTItem item;
 		_value.length = 0;
 		while((item = parseElement(stream)).type != NBTType.End)
-		{
-			std.stdio.writeln(_value.length, " ", item);
 			_value ~= item;
-		}
 	}
 
 	override string toString()
 	{
 		return format("NBTCompound('%s') = {%s}", name, value);
+	}
+
+	INBTItem opIndex(string index)
+	{
+		return get(index);
 	}
 }

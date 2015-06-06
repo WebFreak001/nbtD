@@ -129,4 +129,24 @@ public:
 			return format("NBTList('%s') = %s...", name, items[0 .. lineLength - 21]);
 		return format("NBTList('%s') = %s", name, items);
 	}
+
+	INBTItem opIndex(size_t index)
+	{
+		return _items[index];
+	}
+
+	INBTItem[] opIndex()
+	{
+		return _items[];
+	}
+
+	INBTItem[] opSlice(size_t start, size_t end)
+	{
+		return _items[start .. end];
+	}
+
+	size_t opDollar()
+	{
+		return _items.length;
+	}
 }

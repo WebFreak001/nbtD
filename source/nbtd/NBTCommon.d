@@ -90,11 +90,6 @@ public:
 
 	void read(ref ubyte[] stream, bool hasName = true)
 	{
-		static if(id == NBTType.ByteArray)
-		{
-			std.stdio.writeln(stream);
-			std.stdio.writeln(stream.length);
-		}
 		_name = "";
 		if(hasName)
 		{
