@@ -5,6 +5,7 @@ import nbtd;
 import std.bitmanip;
 import std.zlib;
 import std.traits;
+import std.format;
 
 mixin template NBTCommon(NBTType id, T, PrefixLength = int)
 {
@@ -81,61 +82,32 @@ public:
 	{
 		if(compressed)
 		{
-			UnCompress uncompressor = new UnCompress(HeaderFormat.gzip);
-			data = cast(ubyte[])uncompressor.uncompress(data);
+			data = uncompressGZip(data);
 		}
 
-		if(hasName)
-		{
-			assert(data[0] == cast(ubyte)type);
-
-			short nameLength = data.peek!short(1);
-			_name = cast(string)data[3 .. 3 + nameLength];
-			static if(isArray!T)
-			{
-				auto len = data.peek!PrefixLength(3 + name.length);
-				T arr;
-				for(int i = 0; i < len; i++)
-					arr ~= data.peek!(typeof(_value[0]))(3 + PrefixLength.sizeof + name.length + i * typeof(_value[0]).sizeof);
-				_value = arr;
-			}
-			else
-			{
-				_value = data.peek!T(3 + name.length);
-			}
-		}
-		else
-		{
-			_name = "";
-
-			static if(isArray!T)
-			{
-				auto len = data.peek!PrefixLength(0);
-				T arr;
-				for(int i = 0; i < len; i++)
-					arr ~= data.peek!(typeof(_value[0]))(PrefixLength.sizeof + i * typeof(_value[0]).sizeof);
-				_value = arr;
-			}
-			else
-			{
-				_value = data.peek!T(0);
-			}
-		}
+		read(data, hasName);
 	}
 
 	void read(ref ubyte[] stream, bool hasName = true)
 	{
-		static if(isArray!T)
+		static if(id == NBTType.ByteArray)
+		{
+			std.stdio.writeln(stream);
+			std.stdio.writeln(stream.length);
+		}
+		_name = "";
+		if(hasName)
 		{
 			assert(stream.read!ubyte == cast(ubyte)this.type);
+			short nameLength = stream.read!short;
+			_name = cast(string)stream[0 .. nameLength];
+			stream = stream[nameLength .. $];
+		}
+
+		static if(isArray!T)
+		{
 			alias ElemType = typeof(_value[0]);
-			if(hasName)
-			{
-				short nameLength = stream.read!short;
-				_name = cast(string)stream[0 .. nameLength];
-				stream = stream[nameLength .. $];
-			}
-			short arrLength = stream.read!short;
+			PrefixLength arrLength = stream.read!PrefixLength;
 			T arr;
 			for(int i = 0; i < arrLength; i++)
 				arr ~= stream.read!ElemType;
@@ -143,9 +115,13 @@ public:
 		}
 		else
 		{
-			decode(stream[0 .. size], false, hasName);
-			stream = stream[size .. $];
+			_value = stream.read!T;
 		}
+	}
+
+	override string toString()
+	{
+		return format("%s('%s') = %s", type, name, value);
 	}
 }
 

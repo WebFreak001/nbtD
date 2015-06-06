@@ -6,6 +6,39 @@ public
 	import nbtd.NBTCommon;
 	import nbtd.NBTEnd;
 	import nbtd.NBTList;
+	import nbtd.NBTCompound;
+
+	ubyte[] uncompressGZip(ubyte[] data)
+	{
+		import std.zlib;
+
+		UnCompress uncompressor = new UnCompress(HeaderFormat.gzip);
+		ubyte[] result;
+		while(data.length > 1024)
+		{
+			result ~= cast(ubyte[])uncompressor.uncompress(data[0 .. 1024]);
+			data = data[1024 .. $];
+		}
+		result ~= cast(ubyte[])uncompressor.uncompress(data);
+		result ~= cast(ubyte[])uncompressor.flush();
+		return result;
+	}
+
+	ubyte[] compressGZip(ubyte[] data)
+	{
+		import std.zlib;
+
+		Compress compressor = new Compress(HeaderFormat.gzip);
+		ubyte[] result;
+		while(data.length > 1024)
+		{
+			result ~= cast(ubyte[])compressor.compress(data[0 .. 1024]);
+			data = data[1024 .. $];
+		}
+		result ~= cast(ubyte[])compressor.compress(data);
+		result ~= cast(ubyte[])compressor.flush();
+		return result;
+	}
 
 	INBTItem parseElement(ref ubyte[] stream, bool hasName = true)
 	{
@@ -14,6 +47,8 @@ public
 		switch(stream[0])
 		{
 		case 0:
+			if(hasName)
+				stream = stream[1 .. $];
 			return new NBTEnd();
 		case 1:
 		{
@@ -70,7 +105,11 @@ public
 			return value;
 		}
 		case 10:
-			throw new Exception("Compound is unsupported!");
+		{
+			auto value = new NBTCompound();
+			value.read(stream, hasName);
+			return value;
+		}
 		case 11:
 		{
 			auto value = new NBTIntArray();
@@ -89,6 +128,8 @@ public
 		switch(type)
 		{
 		case 0:
+			if(hasName)
+				stream = stream[1 .. $];
 			return new NBTEnd();
 		case 1:
 		{
@@ -145,7 +186,11 @@ public
 			return value;
 		}
 		case 10:
-			throw new Exception("Compound is unsupported!");
+		{
+			auto value = new NBTCompound();
+			value.read(stream, hasName);
+			return value;
+		}
 		case 11:
 		{
 			auto value = new NBTIntArray();

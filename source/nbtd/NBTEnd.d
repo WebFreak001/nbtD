@@ -40,8 +40,7 @@ public:
 	{
 		if(compressed)
 		{
-			UnCompress uncompressor = new UnCompress(HeaderFormat.gzip);
-			data = cast(ubyte[])uncompressor.uncompress(data);
+			data = uncompressGZip(data);
 		}
 
 		if(hasName)

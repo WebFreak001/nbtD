@@ -46,15 +46,20 @@ unittest
 	assert(nbtText.name == "");
 	assert(nbtText.value == "Hello World");
 
-	NBTIntArray nbtInts = new NBTIntArray();
-	nbtInts.decode(cast(ubyte[])[11, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(int)2) ~ cast(ubyte[])nativeToBigEndian(5) ~ cast(ubyte[])nativeToBigEndian(555), false);
-	assert(nbtInts.name == "");
-	assert(nbtInts.value == [5, 555]);
-
 	NBTList nbtShorts = new NBTList();
 	nbtShorts.decode(cast(ubyte[])[9, 0, 0, 2] ~ cast(ubyte[])nativeToBigEndian(cast(int)1) ~ cast(ubyte[])nativeToBigEndian(cast(short)5), false);
 	assert(nbtShorts.name == "");
 	assert(nbtShorts.value.length == 1);
 	assert(nbtShorts.value[0].type == NBTType.Short, to!string(nbtShorts.value[0].type));
 	assert(nbtShorts.get!NBTShort(0).value == 5);
+
+	NBTCompound nbtCompound = new NBTCompound();
+	nbtCompound.decode(cast(ubyte[])[10, 0, 0, 0], false);
+	assert(nbtCompound.name == "");
+	assert(nbtCompound.value.length == 0);
+
+	NBTIntArray nbtInts = new NBTIntArray();
+	nbtInts.decode(cast(ubyte[])[11, 0, 0] ~ cast(ubyte[])nativeToBigEndian(cast(int)2) ~ cast(ubyte[])nativeToBigEndian(5) ~ cast(ubyte[])nativeToBigEndian(555), false);
+	assert(nbtInts.name == "");
+	assert(nbtInts.value == [5, 555]);
 }

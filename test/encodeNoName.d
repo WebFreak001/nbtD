@@ -25,9 +25,12 @@ unittest
 	NBTString nbtText = new NBTString("Hello World");
 	assert(nbtText.encode(false, false) == cast(ubyte[])nativeToBigEndian(cast(short)nbtText.value.length) ~ cast(ubyte[])nbtText.value);
 
-	NBTIntArray nbtInts = new NBTIntArray([5, 555]);
-	assert(nbtInts.encode(false, false) == cast(ubyte[])nativeToBigEndian(cast(int)nbtInts.value.length) ~ cast(ubyte[])nativeToBigEndian(5) ~ cast(ubyte[])nativeToBigEndian(555));
-
 	NBTList nbtShorts = new NBTList([nbtShort]);
 	assert(nbtShorts.encode(false, false) == cast(ubyte[])[2] ~ cast(ubyte[])nativeToBigEndian(cast(int)1) ~ cast(ubyte[])nativeToBigEndian(cast(short)5));
+
+	NBTCompound nbtCompound = new NBTCompound();
+	assert(nbtCompound.encode(false, false) == cast(ubyte[])[0]);
+
+	NBTIntArray nbtInts = new NBTIntArray([5, 555]);
+	assert(nbtInts.encode(false, false) == cast(ubyte[])nativeToBigEndian(cast(int)nbtInts.value.length) ~ cast(ubyte[])nativeToBigEndian(5) ~ cast(ubyte[])nativeToBigEndian(555));
 }

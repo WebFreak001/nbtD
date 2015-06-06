@@ -2,6 +2,7 @@ module nbtd.NBTList;
 
 import std.bitmanip;
 import std.zlib;
+import std.format;
 
 import nbtd;
 
@@ -94,14 +95,14 @@ public:
 	{
 		if(compressed)
 		{
-			UnCompress uncompressor = new UnCompress(HeaderFormat.gzip);
-			data = cast(ubyte[])uncompressor.uncompress(data);
+			data = uncompressGZip(data);
 		}
 		read(data, hasName);
 	}
 
 	void read(ref ubyte[] stream, bool hasName = true)
 	{
+		_name = "";
 		if(hasName)
 		{
 			assert(stream.read!ubyte == type);
@@ -114,5 +115,18 @@ public:
 		_items.length = 0;
 		for(int i = 0; i < arrLength; i++)
 			_items ~= parseElement(elementType, stream, false);
+	}
+
+	override string toString()
+	{
+		return toString(100);
+	}
+
+	string toString(int lineLength)
+	{
+		string items = format("%s", value);
+		if(items.length > lineLength - 21)
+			return format("NBTList('%s') = %s...", name, items[0 .. lineLength - 21]);
+		return format("NBTList('%s') = %s", name, items);
 	}
 }
