@@ -118,6 +118,34 @@ public:
 	{
 		return format("%s('%s') = %s", type, name, value);
 	}
+
+	static if(isArray!T)
+	{
+		typeof(_value[0]) opIndex(size_t index)
+		{
+			return _value[index];
+		}
+
+		T opIndex()
+		{
+			return _value[];
+		}
+
+		T opSlice(size_t start, size_t end)
+		{
+			return _value[start .. end];
+		}
+
+		size_t opDollar()
+		{
+			return _value.length;
+		}
+
+		@property size_t length()
+		{
+			return _value.length;
+		}
+	}
 }
 
 class NBTByte : INBTItem
