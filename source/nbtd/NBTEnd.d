@@ -13,7 +13,7 @@ public:
 	}
 
 	@property NBTType type() { return NBTType.End; }
-	@property int size() { return 1; }
+	@property int size() { return 0; }
 
 	@property string name() { throw new Exception("NBTEnd has no name!"); }
 	@property void name(string name) { throw new Exception("NBTEnd can not have a name!"); }
@@ -40,11 +40,13 @@ public:
 			data = cast(ubyte[])uncompressor.uncompress(data);
 		}
 
-		assert(data[0] == cast(ubyte)type);
+		if(hasName)
+			assert(data[0] == cast(ubyte)type);
 	}
 
 	void read(ref ubyte[] stream, bool hasName = true)
 	{
-		stream = stream[1 .. $];
+		if(hasName)
+			stream = stream[1 .. $];
 	}
 }
