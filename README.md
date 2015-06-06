@@ -18,8 +18,8 @@ void main(string[] args)
 	NBTString helloWorld = new NBTString("Hello World");
 	write("helloWorld.nbt.gz", helloWorld.encode(true, false));
 	// helloWorld.nbt.gz will now contain this binary string compressed:
-	// 11				Hello World
-	// String Length	UTF-8 string
+	// 11               Hello World
+	// String Length    UTF-8 string
 	//
 	// TAG-ID and Name are not written when hasName is false
 }
