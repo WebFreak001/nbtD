@@ -13,14 +13,9 @@ private:
 	string _name;
 	T _value;
 public:
-	this()
+	this(T value = T.init, string name = "")
 	{
-		_name = "";
-	}
-
-	this(T value)
-	{
-		_name = "";
+		_name = name;
 		_value = value;
 	}
 
@@ -28,7 +23,7 @@ public:
 	@property int size() { static if(isArray!T) { return typeof(_value[0]).sizeof * _value.length + PrefixLength.sizeof; } else { return T.sizeof; } }
 
 	@property string name() { return _name; }
-	@property void name(string name) { assert(name.length < short.sizeof); _name = name; }
+	@property void name(string name) { assert(name.length < short.max, "Name is too long! (%s)".format(name.length)); _name = name; }
 
 	@property T value() { return _value; }
 	@property void value(T value) { _value = value; }
@@ -72,8 +67,7 @@ public:
 
 		if(compressed)
 		{
-			Compress compressor = new Compress(HeaderFormat.gzip);
-			return cast(ubyte[])compressor.compress(data);
+			return compressGZip(data);
 		}
 		return data;
 	}
@@ -145,6 +139,14 @@ public:
 		{
 			return _value.length;
 		}
+	}
+
+	@property INBTItem dup()
+	{
+		auto copy = new typeof(this)();
+		copy.name = name;
+		copy.value = value;
+		return copy;
 	}
 }
 

@@ -12,14 +12,9 @@ private:
 	string _name;
 	INBTItem[] _value;
 public:
-	this()
+	this(INBTItem[] items = [], string name = "")
 	{
-		_name = "";
-	}
-
-	this(INBTItem[] items)
-	{
-		_name = "";
+		_name = name;
 		_value = items;
 	}
 
@@ -28,12 +23,12 @@ public:
 	{
 		int size = 1; // incl. EndTag
 		foreach(INBTItem item; _value)
-			size += item.size;
+			size += item.size + 3 + item.name.length;
 		return size;
 	}
 
 	@property string name() { return _name; }
-	@property void name(string name) { _name = name; }
+	@property void name(string name) { assert(name.length < short.max, "Name is too long! (%s)".format(name.length)); _name = name; }
 
 	@property INBTItem[] value() { return _value; }
 	@property void value(INBTItem[] value) { _value = value; }
@@ -92,8 +87,7 @@ public:
 
 		if(compressed)
 		{
-			Compress compressor = new Compress(HeaderFormat.gzip);
-			return cast(ubyte[])compressor.compress(data);
+			return compressGZip(data);
 		}
 		return data;
 	}
@@ -124,6 +118,14 @@ public:
 			_value ~= item;
 	}
 
+	@property INBTItem dup()
+	{
+		auto copy = new NBTCompound();
+		copy.name = name;
+		copy.value = value;
+		return copy;
+	}
+
 	override string toString()
 	{
 		return format("NBTCompound('%s') = {%s}", name, value);
@@ -132,5 +134,24 @@ public:
 	INBTItem opIndex(string index)
 	{
 		return get(index);
+	}
+
+	INBTItem opIndexAssign(INBTItem item, string index)
+	{
+		int found = -1;
+		item = item.dup;
+		item.name = index;
+		foreach(int i, INBTItem val; _value)
+			if(val.name == index)
+				found = i;
+		if(found == -1)
+		{
+			_value ~= item;
+		}
+		else
+		{
+			_value[found] = item;
+		}
+		return item;
 	}
 }

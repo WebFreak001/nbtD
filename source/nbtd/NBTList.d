@@ -13,15 +13,9 @@ private:
 	NBTType _elementType;
 	INBTItem[] _items;
 public:
-	this()
+	this(INBTItem[] items = [], string name = "")
 	{
-		_name = "";
-		_items = [];
-	}
-
-	this(INBTItem[] items)
-	{
-		_name = "";
+		_name = name;
 		if(items.length > 0)
 		{
 			_elementType = items[0].type;
@@ -33,14 +27,14 @@ public:
 	@property int size() { int len = 0; for(int i = 0; i < _items.length; i++) len += _items[i].size; return 5 + len; }
 
 	@property string name() { return _name; }
-	@property void name(string name) { _name = name; }
+	@property void name(string name) { assert(name.length < short.max, "Name is too long! (%s)".format(name.length)); _name = name; }
 
 	@property INBTItem[] value() { return _items; }
 	@property void value(INBTItem[] value)
 	{
 		for(int i = 0; i < value.length; i++)
 			assert(value[i].type == elementType);
-		_items = value;
+		_items = value[];
 	}
 
 	@property ref elementType() { return _elementType; }
@@ -85,8 +79,7 @@ public:
 
 		if(compressed)
 		{
-			Compress compressor = new Compress(HeaderFormat.gzip);
-			return cast(ubyte[])compressor.compress(data);
+			return compressGZip(data);
 		}
 		return data;
 	}
@@ -117,6 +110,14 @@ public:
 			_items ~= parseElement(elementType, stream, false);
 	}
 
+	@property INBTItem dup()
+	{
+		auto copy = new NBTList();
+		copy.name = name;
+		copy.value = value;
+		return copy;
+	}
+
 	override string toString()
 	{
 		return toString(100);
@@ -128,6 +129,47 @@ public:
 		if(items.length > lineLength - 21)
 			return format("NBTList('%s') = %s...", name, items[0 .. lineLength - 21]);
 		return format("NBTList('%s') = %s", name, items);
+	}
+
+	NBTList opBinary(string op)(INBTItem item)
+	{
+		static if(op == "~")
+		{
+			NBTList copy = new NBTList();
+			copy.name = name;
+			copy.value = value ~ item;
+			return copy;
+		}
+		else static assert(0, "Operator " ~ op ~ " is not implemented!");
+	}
+
+	NBTList opOpAssign(string op)(INBTItem item)
+	{
+		static if(op == "~")
+		{
+			if(_value.length == 0)
+				elementType = item.type;
+			assert(item.type == elementType);
+			_value ~= item;
+			return this;
+		}
+		else static assert(0, "Operator " ~ op ~ " is not implemented!");
+	}
+
+	NBTList opOpAssign(string op)(INBTItem[] items)
+	{
+		static if(op == "~")
+		{
+			if(items.length == 0)
+				return this;
+			if(_value.length == 0)
+				elementType = items[0].type;
+			foreach(item; items)
+				assert(item.type == elementType);
+			_value ~= items;
+			return this;
+		}
+		else static assert(0, "Operator " ~ op ~ " is not implemented!");
 	}
 
 	INBTItem opIndex(size_t index)

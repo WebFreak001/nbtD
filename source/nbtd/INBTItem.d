@@ -37,6 +37,8 @@ interface INBTItem
 
 	void read(ref ubyte[] stream, bool hasName = true);
 
+	@property INBTItem dup();
+
 	final NBTByte asByte() { assert(type == NBTType.Byte, "Expected Byte, got " ~ to!string(type)); return cast(NBTByte)this; }
 	final NBTShort asShort() { assert(type == NBTType.Short, "Expected Short, got " ~ to!string(type)); return cast(NBTShort)this; }
 	final NBTInt asInt() { assert(type == NBTType.Int, "Expected Int, got " ~ to!string(type)); return cast(NBTInt)this; }

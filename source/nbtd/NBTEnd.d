@@ -30,8 +30,7 @@ public:
 			data = [];
 		if(compressed)
 		{
-			Compress compressor = new Compress(HeaderFormat.gzip);
-			return cast(ubyte[])compressor.compress(data);
+			return compressGZip(data);
 		}
 		return data;
 	}
@@ -51,5 +50,15 @@ public:
 	{
 		if(hasName)
 			stream = stream[1 .. $];
+	}
+
+	@property INBTItem dup()
+	{
+		return new NBTEnd();
+	}
+
+	override string toString()
+	{
+		return "NBTEnd";
 	}
 }
