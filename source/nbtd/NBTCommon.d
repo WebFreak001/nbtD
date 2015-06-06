@@ -85,9 +85,10 @@ public:
 			data = cast(ubyte[])uncompressor.uncompress(data);
 		}
 
-		assert(data[0] == cast(ubyte)type);
 		if(hasName)
 		{
+			assert(data[0] == cast(ubyte)type);
+
 			short nameLength = data.peek!short(1);
 			_name = cast(string)data[3 .. 3 + nameLength];
 			static if(isArray!T)
@@ -109,15 +110,15 @@ public:
 
 			static if(isArray!T)
 			{
-				auto len = data.peek!PrefixLength(1);
+				auto len = data.peek!PrefixLength(0);
 				T arr;
 				for(int i = 0; i < len; i++)
-					arr ~= data.peek!(typeof(_value[0]))(1 + PrefixLength.sizeof + i * typeof(_value[0]).sizeof);
+					arr ~= data.peek!(typeof(_value[0]))(PrefixLength.sizeof + i * typeof(_value[0]).sizeof);
 				_value = arr;
 			}
 			else
 			{
-				_value = data.peek!T(1);
+				_value = data.peek!T(0);
 			}
 		}
 	}

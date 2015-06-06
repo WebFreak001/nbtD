@@ -44,6 +44,11 @@ public:
 
 	@property ref elementType() { return _elementType; }
 
+	T get(T : INBTItem = INBTItem)(size_t index)
+	{
+		return cast(T)_items[index];
+	}
+
 	ubyte[] encode(bool compressed = true, bool hasName = true)
 	{
 		ubyte[] data;
@@ -87,15 +92,27 @@ public:
 
 	void decode(ubyte[] data, bool compressed = true, bool hasName = true)
 	{
-		ubyte[] stream = data.dup;
-		assert(stream.read!ubyte == type);
-		if(hasName)
+		if(compressed)
 		{
-
+			UnCompress uncompressor = new UnCompress(HeaderFormat.gzip);
+			data = cast(ubyte[])uncompressor.uncompress(data);
 		}
+		read(data, hasName);
 	}
 
 	void read(ref ubyte[] stream, bool hasName = true)
 	{
+		if(hasName)
+		{
+			assert(stream.read!ubyte == type);
+			short nameLength = stream.read!short;
+			_name = cast(string)stream[0 .. nameLength];
+			stream = stream[nameLength .. $];
+		}
+		elementType = cast(NBTType)stream.read!ubyte;
+		int arrLength = stream.read!int;
+		_items.length = 0;
+		for(int i = 0; i < arrLength; i++)
+			_items ~= parseElement(elementType, stream, false);
 	}
 }
