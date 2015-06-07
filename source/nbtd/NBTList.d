@@ -6,6 +6,7 @@ import std.format;
 
 import nbtd;
 
+/// A List containing unnamed NBT Items.
 class NBTList : INBTItem
 {
 private:
@@ -39,8 +40,10 @@ public:
 		_items = value[];
 	}
 
+	/// Gets/Sets the type of the array. Will automatically get overwritten when array length is 0 and new values are assigned.
 	@property ref elementType() { return _elementType; }
 
+	/// Returns: the item at the index `index`
 	T get(T : INBTItem = INBTItem)(size_t index)
 	{
 		return cast(T)_items[index];
@@ -120,11 +123,15 @@ public:
 		return copy;
 	}
 
+	/// Returns: the list with at most 100 characters width
 	override string toString()
 	{
 		return toString(100);
 	}
 
+	/// Returns: the list with a specified line width.
+	/// Returns: `"NBTList('name') = [each element.toString]"`
+	/// Returns: if longer than `lineLength` will return `"NBTList('name') = [each el..."`
 	string toString(int lineLength)
 	{
 		string items = format("%s", value);
@@ -133,6 +140,8 @@ public:
 		return format("NBTList('%s') = %s", name, items);
 	}
 
+	/// Duplicates the List and appends an item to it if operator is `~`.
+	/// Otherwise `static assert(0)`
 	NBTList opBinary(string op)(INBTItem item)
 	{
 		static if(op == "~")
@@ -145,6 +154,8 @@ public:
 		else static assert(0, "Operator " ~ op ~ " is not implemented!");
 	}
 
+	/// Appends an item to `this` if operator is `~`.
+	/// Otherwise `static assert(0)`
 	NBTList opOpAssign(string op)(INBTItem item)
 	{
 		static if(op == "~")
@@ -158,6 +169,8 @@ public:
 		else static assert(0, "Operator " ~ op ~ " is not implemented!");
 	}
 
+	/// Appends multiple items to `this` if operator is `~`.
+	/// Otherwise `static assert(0)`
 	NBTList opOpAssign(string op)(INBTItem[] items)
 	{
 		static if(op == "~")
@@ -174,26 +187,32 @@ public:
 		else static assert(0, "Operator " ~ op ~ " is not implemented!");
 	}
 
+	/// Returns: the item at index `index`
 	INBTItem opIndex(size_t index)
 	{
 		return _items[index];
 	}
 
+	/// Returns: a duplicate of `this.value`
 	INBTItem[] opIndex()
 	{
 		return _items[];
 	}
 
+	/// Returns: a slice of `this.value`
 	INBTItem[] opSlice(size_t start, size_t end)
 	{
 		return _items[start .. end];
 	}
 
+	/// Returns: the length of `this.value`
+	/// See_Also: length
 	size_t opDollar()
 	{
 		return _items.length;
 	}
 
+	/// Returns: the length of `this.value`
 	@property size_t length()
 	{
 		return _items.length;

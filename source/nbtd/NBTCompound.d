@@ -6,6 +6,7 @@ import std.zlib;
 import std.bitmanip;
 import std.format;
 
+/// NBT Compound containing a array of named items.
 class NBTCompound : INBTItem
 {
 private:
@@ -33,6 +34,12 @@ public:
 	@property INBTItem[] value() { return _value; }
 	@property void value(INBTItem[] value) { _value = value; }
 
+	/// Returns: the item with the name `name`.
+	/// Params:
+	/// 	name =			Name to search for.
+	/// 	throwOnError =	When false, returns null instead of throwing an exception.
+	/// Throws: Exception when unable to cast to the target type.
+	/// Throws: Exception when unable to find `name` in the array.
 	T get(T : INBTItem = INBTItem)(string name, bool throwOnError = true)
 	{
 		foreach(INBTItem item; _value)
@@ -126,16 +133,19 @@ public:
 		return copy;
 	}
 
+	/// Returns: `"NBTCompound('name') = {[each ChildElement.toString()]}"`
 	override string toString()
 	{
 		return format("NBTCompound('%s') = {%s}", name, value);
 	}
 
+	/// See_Also: get
 	INBTItem opIndex(string index)
 	{
 		return get(index);
 	}
 
+	/// Sets the value at `index` to a duplicate of item and will rename the item name to `index`.
 	INBTItem opIndexAssign(INBTItem item, string index)
 	{
 		int found = -1;

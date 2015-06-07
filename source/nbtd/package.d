@@ -8,6 +8,7 @@ public
 	import nbtd.NBTList;
 	import nbtd.NBTCompound;
 
+	/// Helper function for uncompressing a full GZip byte array
 	ubyte[] uncompressGZip(ubyte[] data)
 	{
 		import std.zlib;
@@ -24,6 +25,7 @@ public
 		return result;
 	}
 
+	/// Helper function for GZiping a full byte array
 	ubyte[] compressGZip(ubyte[] data)
 	{
 		import std.zlib;
@@ -40,6 +42,7 @@ public
 		return result;
 	}
 
+	/// Function to read a element from a stream and advance the stream
 	INBTItem parseElement(ref ubyte[] stream, bool hasName = true)
 	{
 		import std.conv;
@@ -121,6 +124,7 @@ public
 		}
 	}
 
+	/// Function to read a specified element from a stream and advance the stream
 	INBTItem parseElement(NBTType type, ref ubyte[] stream, bool hasName = true)
 	{
 		import std.conv;

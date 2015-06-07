@@ -7,12 +7,15 @@ import std.zlib;
 import std.traits;
 import std.format;
 
+/// mixin template for primitive types and arrays. Where all arrays implement the index operator and a length prefix of the PrefixLength argument type.
+/// See_Also: INBTItem
 mixin template NBTCommon(NBTType id, T, PrefixLength = int)
 {
 private:
 	string _name;
 	T _value;
 public:
+	///
 	this(T value = T.init, string name = "")
 	{
 		_name = name;
@@ -108,6 +111,7 @@ public:
 		}
 	}
 
+	/// Returns: `"NBTType('name') = value"`
 	override string toString()
 	{
 		return format("%s('%s') = %s", type, name, value);
@@ -135,6 +139,7 @@ public:
 			return _value.length;
 		}
 
+		/// Returns: the length of this array.
 		@property size_t length()
 		{
 			return _value.length;
@@ -150,46 +155,55 @@ public:
 	}
 }
 
+///
 class NBTByte : INBTItem
 {
 	mixin NBTCommon!(NBTType.Byte, byte);
 }
 
+///
 class NBTShort : INBTItem
 {
 	mixin NBTCommon!(NBTType.Short, short);
 }
 
+///
 class NBTInt : INBTItem
 {
 	mixin NBTCommon!(NBTType.Int, int);
 }
 
+///
 class NBTLong : INBTItem
 {
 	mixin NBTCommon!(NBTType.Long, long);
 }
 
+///
 class NBTFloat : INBTItem
 {
 	mixin NBTCommon!(NBTType.Float, float);
 }
 
+///
 class NBTDouble : INBTItem
 {
 	mixin NBTCommon!(NBTType.Double, double);
 }
 
+///
 class NBTByteArray : INBTItem
 {
 	mixin NBTCommon!(NBTType.ByteArray, byte[]);
 }
 
+///
 class NBTString : INBTItem
 {
 	mixin NBTCommon!(NBTType.String, string, short);
 }
 
+///
 class NBTIntArray : INBTItem
 {
 	mixin NBTCommon!(NBTType.IntArray, int[]);

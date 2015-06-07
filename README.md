@@ -4,6 +4,9 @@ A small NBT encoding and decoding library for D.
 
 It supports all Data TAGs in version 19133 and contains a simple API.
 
+## [Documentation](http://nbtd.webfreak.org/)
+generated using [MaterialDoc](https://github.com/WebFreak001/MaterialDoc)
+
 ## Examples
 
 ### Hello World
