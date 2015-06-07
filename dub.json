@@ -4,7 +4,7 @@
 	"copyright": "Copyright © 2015, WebFreak001",
 	"authors": ["WebFreak001"],
 	"targetType": "library",
-	"license": "GPL-3.0",
+	"license": "public domain",
 	"configurations": [
 		{
 			"name": "library"
