@@ -61,4 +61,4 @@ void main(string[] args)
 - [ ] Easier interface for files
 - [x] Encoding/Decoding ubyte[]
 - [x] Encoding/Decoding gzip'd ubyte[]
-- [x] Support all 19133 TAGs
+- [x] Support all v19133 TAGs
