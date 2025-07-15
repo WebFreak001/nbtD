@@ -15,7 +15,7 @@ public:
 
 	@property NBTType type() { return NBTType.End; }
 	/// Will return 0
-	@property int size() { return 0; }
+	@property size_t size() { return 0; }
 
 	/// Name cannot be get
 	@property string name() { throw new Exception("NBTEnd has no name!"); }
