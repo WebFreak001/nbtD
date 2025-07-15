@@ -25,7 +25,7 @@ public:
 	}
 
 	@property NBTType type() { return NBTType.List; }
-	@property int size() { int len = 0; for(int i = 0; i < _items.length; i++) len += _items[i].size; return 5 + len; }
+	@property size_t size() { size_t len = 0; for(size_t i = 0; i < _items.length; i++) len += _items[i].size; return 5 + len; }
 
 	@property string name() { return _name; }
 	@property void name(string name) { assert(name.length < short.max, "Name is too long! (%s)".format(name.length)); _name = name; }
@@ -55,7 +55,7 @@ public:
 		if(hasName) data = new ubyte[3 + name.length + size];
 		else data = new ubyte[size];
 
-		int dataIndex = 0;
+		size_t dataIndex = 0;
 
 		if(hasName)
 		{
@@ -75,7 +75,7 @@ public:
 			dataIndex = 5;
 		}
 
-		for(int i = 0; i < value.length; i++)
+		for(size_t i = 0; i < value.length; i++)
 		{
 			auto buffer = value[i].encode(false, false);
 			data[dataIndex .. dataIndex + buffer.length] = buffer;

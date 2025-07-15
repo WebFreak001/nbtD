@@ -27,7 +27,7 @@ interface INBTItem
 	/// Returns: the type of the NBT Item.
 	@property NBTType type();
 	/// Returns: the size in bytes of the NBT Item without name.length, name or TAG ID.
-	@property int size();
+	@property size_t size();
 
 	/// Returns: the name of the Item as UTF-8 string.
 	@property string name();

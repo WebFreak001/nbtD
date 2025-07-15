@@ -20,9 +20,9 @@ public:
 	}
 
 	@property NBTType type() { return NBTType.Compound; }
-	@property int size()
+	@property size_t size()
 	{
-		int size = 1; // incl. EndTag
+		size_t size = 1; // incl. EndTag
 		foreach(INBTItem item; _value)
 			size += item.size + 3 + item.name.length;
 		return size;
@@ -69,8 +69,8 @@ public:
 			data[0] = cast(ubyte)type;
 			data.write(cast(short)_name.length, 1);
 			data[3 .. 3 + _name.length] = cast(ubyte[])_name;
-			int index = 3 + name.length;
-			for(int i = 0; i < _value.length; i++)
+			size_t index = 3 + name.length;
+			for(size_t i = 0; i < _value.length; i++)
 			{
 				ubyte[] buffer = _value[i].encode(false);
 				data[index .. index + buffer.length] = buffer;
@@ -81,8 +81,8 @@ public:
 		}
 		else
 		{
-			int index = 0;
-			for(int i = 0; i < _value.length; i++)
+			size_t index = 0;
+			for(size_t i = 0; i < _value.length; i++)
 			{
 				ubyte[] buffer = _value[i].encode(false);
 				data[index .. index + buffer.length] = buffer;
@@ -148,10 +148,10 @@ public:
 	/// Sets the value at `index` to a duplicate of item and will rename the item name to `index`.
 	INBTItem opIndexAssign(INBTItem item, string index)
 	{
-		int found = -1;
+		ptrdiff_t found = -1;
 		item = item.dup;
 		item.name = index;
-		foreach(int i, INBTItem val; _value)
+		foreach(ptrdiff_t i, INBTItem val; _value)
 			if(val.name == index)
 				found = i;
 		if(found == -1)

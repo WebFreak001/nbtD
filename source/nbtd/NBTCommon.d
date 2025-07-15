@@ -23,7 +23,7 @@ public:
 	}
 
 	@property NBTType type() { return id; }
-	@property int size() { static if(isArray!T) { return typeof(_value[0]).sizeof * _value.length + PrefixLength.sizeof; } else { return T.sizeof; } }
+	@property size_t size() { static if(isArray!T) { return typeof(_value[0]).sizeof * _value.length + PrefixLength.sizeof; } else { return T.sizeof; } }
 
 	@property string name() { return _name; }
 	@property void name(string name) { assert(name.length < short.max, "Name is too long! (%s)".format(name.length)); _name = name; }
@@ -46,7 +46,7 @@ public:
 			static if(isArray!T)
 			{
 				data.write!PrefixLength(cast(PrefixLength)value.length, 3 + name.length);
-				for(int i = 0; i < value.length; i++)
+				for(size_t i = 0; i < value.length; i++)
 					data.write!(typeof(_value[0]))(_value[i], 3 + PrefixLength.sizeof + name.length + i * typeof(_value[0]).sizeof);
 			}
 			else
@@ -59,7 +59,7 @@ public:
 			static if(isArray!T)
 			{
 				data.write!PrefixLength(cast(PrefixLength)value.length, 0);
-				for(int i = 0; i < value.length; i++)
+				for(size_t i = 0; i < value.length; i++)
 					data.write!(typeof(_value[0]))(_value[i], PrefixLength.sizeof + i * typeof(_value[0]).sizeof);
 			}
 			else
